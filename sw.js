@@ -1,16 +1,19 @@
-const CACHE = "rdr1-100-v1";
-const CORE = ["./", "index.html", "manifest.webmanifest", "favicon.svg", "icons/icon-192.png", "icons/icon-512.png", "icons/maskable-512.png", "icons/icon-180.png"];
-self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
-self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
-self.addEventListener("fetch", e => {
-  const r = e.request;
-  if (r.method !== "GET") return;
-  if (r.mode === "navigate") {
-    e.respondWith(fetch(r).then(res => { const cp = res.clone(); caches.open(CACHE).then(c => c.put("index.html", cp)); return res; }).catch(() => caches.match("index.html")));
-    return;
-  }
-  e.respondWith(caches.match(r).then(hit => hit || fetch(r).then(res => {
-    if (res.ok && (new URL(r.url).origin === location.origin || /fonts\.(googleapis|gstatic)\.com/.test(r.url))) { const cp = res.clone(); caches.open(CACHE).then(c => c.put(r, cp)); }
-    return res;
-  }).catch(() => hit)));
-});
+{
+  "name": "RDR на 100%",
+  "short_name": "RDR 100%",
+  "description": "Трекер Red Dead Redemption: достижения Steam по частям сюжета, испытания, животные и карта. Неофициальное фанатское приложение.",
+  "lang": "ru",
+  "dir": "ltr",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#141513",
+  "theme_color": "#141513",
+  "categories": ["games", "utilities"],
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
